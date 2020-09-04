@@ -1,0 +1,57 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: scc-pv-claim
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: "1G"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: scc-deployment
+  labels:
+    app: scc
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: scc
+  template:
+    metadata:
+      labels:
+        app: scc
+    spec:
+      volumes:
+        - name: scc-volume
+          persistentVolumeClaim:
+            claimName: scc-pv-claim
+      containers:
+        - name: scc
+          image: sapcc:2.12.6
+          ports:
+            - containerPort: 8443
+          resources:
+            limits:
+              cpu: "0.5"
+              memory: "1G"
+          volumeMounts:
+            - mountPath: "/scc"
+              name: scc-volume
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: scc-service
+  labels:
+    app: scc
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 8443
+      targetPort: 8443
+  selector:
+    app: scc
