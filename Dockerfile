@@ -22,6 +22,7 @@ RUN wget --no-cookies --header "Cookie: eula_3_1_agreed=tools.hana.ondemand.com/
 VOLUME [ "/scc" ]
 
 COPY ./src/go.sh /
+RUN chmod +x /go.sh
 WORKDIR /scc
 
 ENTRYPOINT [ "/go.sh" ]
