@@ -15,8 +15,8 @@ on:
 
 env:
   # TODO: Change variable to your image's name.
-  IMAGE_NAME: sap-cloud-connector/stable
-  DOCKER_URL: docker.pkg.github.com
+  IMAGE_NAME: sap-cloud-connector
+  DOCKER_URL: ghcr.io
 
 jobs:
   # Run tests.
