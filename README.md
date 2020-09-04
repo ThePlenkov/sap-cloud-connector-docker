@@ -6,7 +6,7 @@ Key feature of the current implementation - is supporting persistent volume to b
 
 ## How to use with docker
 
-In this example we create scc_cache folder (can be any name)  to use it as our persistent volume.  Target folder /scc is predefined. Is not required and may be omitted.
+In this example we create scc_cache folder (can be any name) to use it as our persistent volume. Target folder /scc is predefined. Is not required and may be omitted.
 
 We also use port-forwarding to expose container port to localhost
 
