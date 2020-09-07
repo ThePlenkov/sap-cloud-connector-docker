@@ -8,6 +8,7 @@ spec:
   resources:
     requests:
       storage: "1G"
+  storageClassName: netapp-nfs
 ---
 apiVersion: apps/v1
 kind: Deployment
