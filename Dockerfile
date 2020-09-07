@@ -11,6 +11,7 @@ RUN adduser sccadmin
 RUN chown -R sccadmin:sccadmin /tmp
 
 RUN mkdir scc && chown -R sccadmin:sccadmin /scc
+RUN chmod 777 /scc
 
 COPY ./src/go.sh /
 RUN chmod +x /go.sh

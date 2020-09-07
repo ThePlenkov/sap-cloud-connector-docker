@@ -26,6 +26,10 @@ spec:
       labels:
         app: scc
     spec:
+      securityContext:
+        fsGroup: 1000
+        runAsUser: 1000
+        runAsGroup: 1000
       volumes:
         - name: scc-volume
           persistentVolumeClaim:
@@ -33,6 +37,9 @@ spec:
       containers:
         - name: scc
           image: ghcr.io/theplenkov/sap-cloud-connector:latest
+          # command: ["/bin/sh"]
+          # args:
+          #   ["-c", "sleep 1000 && echo Sleep expired > /dev/termination-log"]
           ports:
             - containerPort: 8443
           resources:
@@ -50,9 +57,10 @@ metadata:
   labels:
     app: scc
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   ports:
-    - port: 8443
+    - name: scc-port
+      port: 443
       targetPort: 8443
   selector:
     app: scc
