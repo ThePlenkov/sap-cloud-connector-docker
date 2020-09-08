@@ -1,13 +1,14 @@
-FROM centos
+FROM openjdk:8-jre
 
 # SCC version
+ARG DEBIAN_FRONTEND=noninteractive
 ARG SCC_VERSION=2.12.4
 
 # install dependencies
 # lsof is needed for SCC
-RUN yum update -y && yum install -y java-1.8.0-openjdk which lsof
+RUN apt-get update -y && apt-get install -y --no-install-recommends lsof curl
 
-RUN adduser sccadmin
+RUN adduser --disabled-password --gecos "SAP Cloud Connector Admin" sccadmin
 RUN chown -R sccadmin:sccadmin /tmp
 
 RUN mkdir scc && chown -R sccadmin:sccadmin /scc
