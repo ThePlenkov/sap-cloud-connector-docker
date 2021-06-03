@@ -2,7 +2,7 @@ FROM openjdk:8-jre
 
 # SCC version
 ARG DEBIAN_FRONTEND=noninteractive
-ARG SCC_VERSION=2.12.4
+ARG SCC_VERSION=2.13.1
 
 # install dependencies
 # lsof is needed for SCC
