@@ -21,4 +21,4 @@ cp -R /tmp/scc_backup/* /scc
 #rm -r /tmp/scc_backup
 
 # run the app
-bash /scc/go.sh
+( exec "/scc/go.sh" )
