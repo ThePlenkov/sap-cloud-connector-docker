@@ -1,9 +1,5 @@
 FROM oraclelinux:8
 
-# unzip - to unzip downloaded files
-# lsof is used in scc scripts
-# RUN zypper install curl unzip lsof
-
 ARG JVM_VERSION=8.1.075
 ARG JVM_FILENAME=/tmp/jvm.rpm
 
