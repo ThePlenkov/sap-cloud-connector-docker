@@ -2,6 +2,8 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: scc-pv-claim
+  labels:
+    service-directory.service: sap-cloud-connector
 spec:
   accessModes:
     - ReadWriteMany
@@ -16,6 +18,7 @@ metadata:
   name: scc-deployment
   labels:
     app: scc
+    service-directory.service: sap-cloud-connector
 spec:
   replicas: 1
   selector:
@@ -56,6 +59,7 @@ metadata:
   name: scc-service
   labels:
     app: scc
+    service-directory.service: sap-cloud-connector
 spec:
   type: ClusterIP
   ports:
