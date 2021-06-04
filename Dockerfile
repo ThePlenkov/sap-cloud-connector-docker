@@ -1,37 +1,49 @@
-FROM openjdk:8-jre
+FROM oraclelinux:8
 
-# SCC version
-ARG DEBIAN_FRONTEND=noninteractive
+ARG JVM_VERSION=8.1.075
+ARG JVM_FILENAME=/tmp/jvm.rpm
+
+# Download and install SAP JVM
+RUN curl -b "eula_3_1_agreed=tools.hana.ondemand.com/developer-license-3_1.txt; path=/;" --output ${JVM_FILENAME} https://tools.hana.ondemand.com/additional/sapjvm-${JVM_VERSION}-linux-x64.rpm
+RUN rpm -i ${JVM_FILENAME}
+RUN rm ${JVM_FILENAME}
+ENV JAVA_HOME /usr/java/sapjvm_8_latest
+
+# Download and install SCC
 ARG SCC_VERSION=2.13.1
+ARG SCC_FILENAME=/tmp/scc.zip
 
-# install dependencies
-# lsof is needed for SCC
-RUN apt-get update -y && apt-get install -y --no-install-recommends lsof curl
+RUN curl -b "eula_3_1_agreed=tools.hana.ondemand.com/developer-license-3_1.txt; path=/;" --output ${SCC_FILENAME} https://tools.hana.ondemand.com/additional/sapcc-${SCC_VERSION}-linux-x64.zip
+RUN yum install unzip lsof -y
+RUN unzip ${SCC_FILENAME} -d /tmp
+RUN yum localinstall /tmp/com.sap.scc-ui-${SCC_VERSION}-8.x86_64.rpm -y
+RUN rm ${SCC_FILENAME}
+RUN rm /tmp/com.sap.scc-ui-${SCC_VERSION}-8.x86_64.rpm 
 
-RUN adduser --disabled-password --gecos "SAP Cloud Connector Admin" sccadmin
-RUN chown -R sccadmin:sccadmin /tmp
+# backup installed distributive ( to update cached runtime from the volume, see src/go.sh )
+# RUN cd /opt/sap/scc/ && ./useFileUserStore.sh
+RUN cp -r /opt/sap/scc /tmp/scc_dist
 
-RUN mkdir scc && chown -R sccadmin:sccadmin /scc
-RUN chmod 777 /scc
 
+# prepare go.sh
 COPY ./src/go.sh /
 RUN chmod +x /go.sh
 
+# user is needed for k8s
+RUN groupmod -g 1000 sccgroup
+RUN usermod -u 1000 sccadmin
+# RUN groupadd sccgroup
+# RUN adduser --disabled-password --gecos "SAP Cloud Connector Admin" --ingroup sccgroup sccadmin
+# RUN adduser --comment "SAP Cloud Connector Admin" --groups sccgroup sccadmin
+
+RUN chown -R sccadmin:sccgroup /tmp /opt/sap
+# RUN /opt/sap/scc/useFileUserStore.sh
 USER sccadmin
 
-# download and install sapcc
-# ATTENTION:
-# This automated download automatically accepts SAP's End User License Agreement (EULA).
-# Thus, when using this docker file as is you automatically accept SAP's EULA!
-RUN curl -b "eula_3_1_agreed=tools.hana.ondemand.com/developer-license-3_1.txt; path=/;" --output /tmp/sapcc.tar.gz https://tools.hana.ondemand.com/additional/sapcc-${SCC_VERSION}-linux-x64.tar.gz  && \
-  mkdir /tmp/scc_dist && \
-  tar -C /tmp/scc_dist -xzof /tmp/sapcc.tar.gz && \
-  cp -R /tmp/scc_dist/* /scc
-
 # declare the volume - we expect that it will be used to persist config
-VOLUME [ "/scc" ]
+VOLUME [ "/opt/sap/scc" ]
 
-WORKDIR /scc
+WORKDIR /opt/sap/scc
 ENTRYPOINT [ "/go.sh" ]
 
 EXPOSE 8443

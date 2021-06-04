@@ -6,7 +6,7 @@ Key feature of the current implementation - is supporting persistent volume to b
 
 ## How to use with docker
 
-In this example we create scc_cache folder (can be any name)  to use it as our persistent volume.  Target folder /scc is predefined. Is not required and may be omitted.
+In this example we create scc_cache folder (can be any name) to use it as our persistent volume. Target folder /scc is predefined. Is not required and may be omitted.
 
 We also use port-forwarding to expose container port to localhost
 
@@ -22,3 +22,9 @@ It is also possibe to install SAP cloud connector with Kubernetes just with one 
 ```bash
 kubectl apply -f https://raw.githubusercontent.com/ThePlenkov/sap-cloud-connector-docker/master/k8s/scc-deployment.yaml
 ```
+
+# SAP cloud connector (Docker + Kubernetes)
+
+This project combines Docker and Kubernetes experience with SAP Cloud Connector
+
+Key feature of the current implementation - is supporting persistent volume to be able to keep configuration apart of the container
