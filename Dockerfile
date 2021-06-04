@@ -25,7 +25,9 @@ RUN rm ${SCC_FILENAME}
 RUN rm /tmp/com.sap.scc-ui-${SCC_VERSION}-8.x86_64.rpm 
 
 # backup installed distributive ( to update cached runtime from the volume, see src/go.sh )
+# RUN cd /opt/sap/scc/ && ./useFileUserStore.sh
 RUN cp -r /opt/sap/scc /tmp/scc_dist
+
 
 # prepare go.sh
 COPY ./src/go.sh /
